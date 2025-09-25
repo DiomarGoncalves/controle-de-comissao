@@ -42,9 +42,19 @@ app.use(session({
   }
 }));
 
+app.use((req, res, next) => {
+  console.log('--- Nova requisição ---');
+  console.log('URL:', req.originalUrl);
+  console.log('Método:', req.method);
+  console.log('Cookies recebidos:', req.headers.cookie);
+  console.log('Sessão atual:', req.session ? req.session.user : null);
+  next();
+});
+
 // Authentication middleware
 const requireAuth = (req, res, next) => {
-  // Debug: log sessão
+  console.log('Verificando autenticação...');
+  console.log('Sessão:', req.session ? req.session.user : null);
   if (!req.session.user) {
     console.log('Sessão não encontrada. Usuário não autenticado.');
     return res.status(401).json({ error: 'Não autorizado' });
@@ -58,7 +68,7 @@ const requireAuth = (req, res, next) => {
 app.post('/api/login', async (req, res) => {
   try {
     const { username, password } = req.body;
-    console.log('Tentativa de login:', username);
+    console.log('Tentativa de login:', username, 'Senha:', password);
     // Busca usuário pelo username
     const result = await pool.query(
       'SELECT * FROM "users" WHERE username = $1 LIMIT 1',
@@ -76,6 +86,7 @@ app.post('/api/login', async (req, res) => {
     }
     req.session.user = { username: user.username };
     console.log('Login bem-sucedido, sessão criada para:', user.username);
+    console.log('Sessão após login:', req.session.user);
     res.json({ success: true, user: { username: user.username } });
   } catch (error) {
     console.error('Login error:', error);
@@ -85,16 +96,21 @@ app.post('/api/login', async (req, res) => {
 
 // Logout
 app.post('/api/logout', (req, res) => {
+  console.log('Logout solicitado. Sessão antes do logout:', req.session ? req.session.user : null);
   req.session.destroy((err) => {
     if (err) {
+      console.error('Erro ao destruir sessão:', err);
       return res.status(500).json({ error: 'Erro ao fazer logout' });
     }
+    console.log('Logout realizado com sucesso.');
     res.json({ success: true });
   });
 });
 
 // Check auth status
 app.get('/api/auth/check', (req, res) => {
+  console.log('Verificando status de autenticação...');
+  console.log('Sessão:', req.session ? req.session.user : null);
   if (req.session.user) {
     res.json({ authenticated: true, user: req.session.user });
   } else {
@@ -106,6 +122,7 @@ app.get('/api/auth/check', (req, res) => {
 
 // Get all commissions
 app.get('/api/commissions', requireAuth, async (req, res) => {
+  console.log('Requisição para /api/commissions. Sessão:', req.session ? req.session.user : null);
   try {
     const { status } = req.query;
     
