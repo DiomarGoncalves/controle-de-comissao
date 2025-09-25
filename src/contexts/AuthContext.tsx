@@ -34,12 +34,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const checkAuth = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setLoading(false);
+      return;
+    }
     try {
       const response = await fetch('/api/auth/check', {
-        credentials: 'include'
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
       const data = await response.json();
-      
       if (data.authenticated) {
         setUser(data.user);
       }
@@ -57,13 +63,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include',
         body: JSON.stringify({ username, password }),
       });
-
       const data = await response.json();
-
-      if (data.success) {
+      if (data.success && data.token) {
+        localStorage.setItem('token', data.token);
         setUser(data.user);
         return true;
       }
@@ -75,15 +79,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const logout = async () => {
-    try {
-      await fetch('/api/logout', {
-        method: 'POST',
-        credentials: 'include',
-      });
-      setUser(null);
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
+    localStorage.removeItem('token');
+    setUser(null);
   };
 
   const value = {

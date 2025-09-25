@@ -39,8 +39,8 @@ const CommissionList: React.FC<CommissionListProps> = ({
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
-        credentials: 'include',
         body: JSON.stringify(editData),
       });
 
@@ -65,7 +65,9 @@ const CommissionList: React.FC<CommissionListProps> = ({
       try {
         const response = await fetch(`/api/commissions/${id}`, {
           method: 'DELETE',
-          credentials: 'include',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
         });
 
         if (response.ok) {
@@ -83,8 +85,8 @@ const CommissionList: React.FC<CommissionListProps> = ({
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
-        credentials: 'include',
         body: JSON.stringify({ is_paid: !commission.is_paid }),
       });
 
