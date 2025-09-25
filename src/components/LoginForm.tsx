@@ -81,7 +81,6 @@ const LoginForm: React.FC = () => {
         </form>
 
         <div className="mt-6 text-center text-sm text-gray-500">
-          <p>Credenciais padrão: admin / admin123</p>
         </div>
       </div>
     </div>
