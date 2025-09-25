@@ -56,17 +56,21 @@ const requireAuth = (req, res, next) => {
 app.post('/api/login', async (req, res) => {
   try {
     const { username, password } = req.body;
-    // Consulta usuário no banco
+    // Busca usuário pelo username
     const result = await pool.query(
-      'SELECT * FROM "users" WHERE username = $1 AND password = $2 LIMIT 1',
-      [username, password]
+      'SELECT * FROM "users" WHERE username = $1 LIMIT 1',
+      [username]
     );
-    if (result.rows.length > 0) {
-      req.session.user = { username: result.rows[0].username };
-      res.json({ success: true, user: { username: result.rows[0].username } });
-    } else {
-      res.status(401).json({ error: 'Credenciais inválidas' });
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: 'Credenciais inválidas' });
     }
+    const user = result.rows[0];
+    // Compara senha diretamente (sem bcrypt)
+    if (user.password !== password) {
+      return res.status(401).json({ error: 'Credenciais inválidas' });
+    }
+    req.session.user = { username: user.username };
+    res.json({ success: true, user: { username: user.username } });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
