@@ -44,7 +44,9 @@ app.use(session({
 
 // Authentication middleware
 const requireAuth = (req, res, next) => {
+  // Debug: log sessão
   if (!req.session.user) {
+    console.log('Sessão não encontrada. Usuário não autenticado.');
     return res.status(401).json({ error: 'Não autorizado' });
   }
   next();
@@ -56,20 +58,24 @@ const requireAuth = (req, res, next) => {
 app.post('/api/login', async (req, res) => {
   try {
     const { username, password } = req.body;
+    console.log('Tentativa de login:', username);
     // Busca usuário pelo username
     const result = await pool.query(
       'SELECT * FROM "users" WHERE username = $1 LIMIT 1',
       [username]
     );
     if (result.rows.length === 0) {
+      console.log('Usuário não encontrado:', username);
       return res.status(401).json({ error: 'Credenciais inválidas' });
     }
     const user = result.rows[0];
     // Compara senha diretamente (sem bcrypt)
     if (user.password !== password) {
+      console.log('Senha incorreta para usuário:', username);
       return res.status(401).json({ error: 'Credenciais inválidas' });
     }
     req.session.user = { username: user.username };
+    console.log('Login bem-sucedido, sessão criada para:', user.username);
     res.json({ success: true, user: { username: user.username } });
   } catch (error) {
     console.error('Login error:', error);
