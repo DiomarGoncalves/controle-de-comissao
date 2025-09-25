@@ -37,10 +37,21 @@ const Dashboard: React.FC = () => {
       const response = await fetch('/api/commissions', {
         credentials: 'include'
       });
+      if (response.status === 401) {
+        setCommissions([]);
+        setLoading(false);
+        return;
+      }
       const data = await response.json();
+      if (!Array.isArray(data)) {
+        setCommissions([]);
+        setLoading(false);
+        return;
+      }
       setCommissions(data);
     } catch (error) {
       console.error('Error fetching commissions:', error);
+      setCommissions([]);
     } finally {
       setLoading(false);
     }
