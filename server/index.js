@@ -58,7 +58,7 @@ app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
     // Consulta usuário no banco
     const result = await pool.query(
-      'SELECT * FROM "user" WHERE username = $1 AND password = $2 LIMIT 1',
+      'SELECT * FROM "users" WHERE username = $1 AND password = $2 LIMIT 1',
       [username, password]
     );
     if (result.rows.length > 0) {
