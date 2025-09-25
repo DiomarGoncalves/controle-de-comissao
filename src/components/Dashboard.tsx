@@ -34,7 +34,7 @@ const Dashboard: React.FC = () => {
 
   const fetchCommissions = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/commissions', {
+      const response = await fetch('/api/commissions', {
         credentials: 'include'
       });
       const data = await response.json();
@@ -74,7 +74,7 @@ const Dashboard: React.FC = () => {
 
   const exportCSV = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/commissions/export', {
+      const response = await fetch('/api/commissions/export', {
         credentials: 'include'
       });
       

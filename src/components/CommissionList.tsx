@@ -35,7 +35,7 @@ const CommissionList: React.FC<CommissionListProps> = ({
 
   const handleSave = async (id: string) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/commissions/${id}`, {
+      const response = await fetch(`/api/commissions/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ const CommissionList: React.FC<CommissionListProps> = ({
   const handleDelete = async (id: string) => {
     if (window.confirm('Tem certeza que deseja excluir esta comissão?')) {
       try {
-        const response = await fetch(`http://localhost:3001/api/commissions/${id}`, {
+        const response = await fetch(`/api/commissions/${id}`, {
           method: 'DELETE',
           credentials: 'include',
         });
@@ -79,7 +79,7 @@ const CommissionList: React.FC<CommissionListProps> = ({
 
   const togglePaidStatus = async (commission: Commission) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/commissions/${commission.id}`, {
+      const response = await fetch(`/api/commissions/${commission.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

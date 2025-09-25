@@ -39,7 +39,7 @@ const CommissionForm: React.FC<CommissionFormProps> = ({ onCommissionAdded }) =>
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:3001/api/commissions', {
+      const response = await fetch('/api/commissions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
