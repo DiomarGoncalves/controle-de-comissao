@@ -1,0 +1,13 @@
+[
+  {
+    "id": 1,
+    "nf": "dsa",
+    "nectar": "ds",
+    "embrascol": "dsa",
+    "valor_nf": 15000.0,
+    "fator": 0.025,
+    "valor_comissao": 375.0,
+    "status": "Pendente",
+    "data": "25/09/2025"
+  }
+]
