@@ -35,9 +35,7 @@ const Dashboard: React.FC = () => {
   const fetchCommissions = async () => {
     try {
       const response = await fetch('/api/commissions', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        }
+        credentials: 'include'
       });
       if (response.status === 401) {
         setCommissions([]);
@@ -88,9 +86,7 @@ const Dashboard: React.FC = () => {
   const exportCSV = async () => {
     try {
       const response = await fetch('/api/commissions/export', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        }
+        credentials: 'include'
       });
       
       if (response.ok) {

@@ -56,13 +56,14 @@ const requireAuth = (req, res, next) => {
 app.post('/api/login', async (req, res) => {
   try {
     const { username, password } = req.body;
-    
-    const adminUsername = process.env.ADMIN_USERNAME || 'admin';
-    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
-    
-    if (username === adminUsername && password === adminPassword) {
-      req.session.user = { username: adminUsername };
-      res.json({ success: true, user: { username: adminUsername } });
+    // Consulta usuário no banco
+    const result = await pool.query(
+      'SELECT * FROM "user" WHERE username = $1 AND password = $2 LIMIT 1',
+      [username, password]
+    );
+    if (result.rows.length > 0) {
+      req.session.user = { username: result.rows[0].username };
+      res.json({ success: true, user: { username: result.rows[0].username } });
     } else {
       res.status(401).json({ error: 'Credenciais inválidas' });
     }
